@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/fraz/Programming/os/os-shell-script/task2/main.c
+sys/types.h
+-
+unistd.h
+-
+stdio.h
+-
+stdlib.h
+-
+wait.h
+-
+errno.h
+-
+

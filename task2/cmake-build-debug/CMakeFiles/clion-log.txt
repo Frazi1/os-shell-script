@@ -1,0 +1,4 @@
+/media/fraz/Data1/Download/_Programs_/For_Linux/Programming/JetBrains/CLion/clion-2017.2.2/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/fraz/Programming/os/os-shell-script/task2
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug
