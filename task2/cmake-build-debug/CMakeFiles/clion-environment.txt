@@ -1,2 +1,2 @@
 Options: 
-CMake: 3.8.2@/media/fraz/Data1/Download/_Programs_/For_Linux/Programming/JetBrains/CLion/clion-2017.2.2/bin/cmake/bin/cmake
+CMake: 3.8.2@/home/dmitry/Downloads/clion-2017.2.2/bin/cmake/bin/cmake

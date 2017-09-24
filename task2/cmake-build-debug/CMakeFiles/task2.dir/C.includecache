@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/fraz/Programming/os/os-shell-script/task2/main.c
+/home/dmitry/fkn/os/task2/main.c
 sys/types.h
 -
 unistd.h

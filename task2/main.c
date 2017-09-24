@@ -12,23 +12,28 @@
 void create_pipe(void (*pf)(void), void (*chf)(void)) {
     int fd[2];
     pipe(fd);
-    if (fork()) {
+    pid_t pid = fork();
+    if (pid) {
         //parent
-        dup2(fd[1], 1);
-
+        if (fd[1] != 1) {
+            dup2(fd[1], 1);
+        }
+        close(fd[0]);
         close(fd[1]);
-//        if (fd[1] != 1) {
-//        }
         pf();
     } else {
         //child
-        dup2(fd[0], 0);
-
+        if (fd[0] != 0) {
+            dup2(fd[0], 0);
+        }
         close(fd[0]);
-//        if (fd[0] != 0) {
-//        }
+        close(fd[1]);
         chf();
     }
+//    close(fd[0]);
+//    close(fd[1]);
+    int status;
+    waitpid(pid,&status , NULL);
 }
 
 void cat_log() {
@@ -44,9 +49,9 @@ void cut_first(){
 }
 
 void remove_time_from_date() {
-//    execlp("sed", "/bin/sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", (char *) NULL);
-    char *command[3] = {"sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", NULL};
-    execvp(command[0], command);
+    execlp("sed", "sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", (char *) NULL);
+//    char *command[3] = {"sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", NULL};
+//    execvp(command[0], command);
 }
 
 void reformat_date(){
@@ -54,16 +59,35 @@ void reformat_date(){
     execvp(command[0],command);
 }
 
-void find_errcode4(){
-    char* commmand[3]
+void find_errcode(){
+    execlp("grep", "grep" ,"[[:space:]]4", (char*) NULL);
+//    char* command[3] = {"grep", (char *) '4', NULL};
+//    execvp(command[0], command);
+}
+
+void count_uniq_dates(){
+    execlp("uniq","uniq", "-c1", (char*) NULL);
+
+}
+
+void sort(){
+    execlp("sort", "sort", "-nrk 1", (char*) NULL);
+}
+
+void pipe7(){
+    create_pipe(count_uniq_dates, sort);
+}
+
+void pipe6(){
+    create_pipe(find_errcode, pipe7);
 }
 
 void pipe5(){
-    create_pipe(reformat_date, pipe6);
+    create_pipe(remove_time_from_date, pipe6);
 }
 
 void pipe4() {
-    create_pipe(remove_time_from_date, pipe5);
+    create_pipe(find_errcode, pipe5);
 }
 
 void pipe3() {
@@ -82,5 +106,6 @@ void pipe1() {
 int main(int argc, char **argv) {
 
     pipe1();
+
     return 0;
 }

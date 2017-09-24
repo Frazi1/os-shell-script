@@ -8,38 +8,38 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug"/>
+				<Option working_dir="/home/dmitry/fkn/os/task2/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug"/>
+				<Option working_dir="/home/dmitry/fkn/os/task2/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug"/>
+				<Option working_dir="/home/dmitry/fkn/os/task2/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="task2">
-				<Option output="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/task2" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug"/>
+				<Option output="/home/dmitry/fkn/os/task2/cmake-build-debug/task2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dmitry/fkn/os/task2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -54,15 +54,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 task2"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 task2"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="task2/fast">
-				<Option output="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/task2" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug"/>
+				<Option output="/home/dmitry/fkn/os/task2/cmake-build-debug/task2" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/dmitry/fkn/os/task2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -77,17 +77,17 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 task2/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/fraz/Programming/os/os-shell-script/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 task2/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/dmitry/fkn/os/task2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/fraz/Programming/os/os-shell-script/task2/main.c">
+		<Unit filename="/home/dmitry/fkn/os/task2/main.c">
 			<Option target="task2"/>
 		</Unit>
-		<Unit filename="/home/fraz/Programming/os/os-shell-script/task2/CMakeLists.txt">
+		<Unit filename="/home/dmitry/fkn/os/task2/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>
