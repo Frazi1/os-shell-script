@@ -9,24 +9,6 @@
 #define WRITE_END 1
 
 
-
-//void create_pipe(void (*prev_func)(void), void (*next_func)(void)) {
-//    int fd[2];
-//    pipe(fd);
-//    pid_t pid = fork();
-//    if(!pid){
-//        //child
-//        close(fd[WRITE_END]);
-//        dup2(fd[READ_END], READ_END);
-//        next_func();
-//    } else {
-//        //parent
-//        close(fd[READ_END]);
-//        dup2(fd[WRITE_END], STDOUT_FILENO);
-//        prev_func();
-//    }
-//}
-
 void create_pipe(void (*pf)(void), void (*chf)(void)) {
     int fd[2];
     pipe(fd);
@@ -55,26 +37,41 @@ void cat_log() {
 
 void print_date_errcode() {
     execlp("awk", "awk", "{print $4, $9}", (char*) NULL);
-//    char *command[3] = {"awk", "{print $4, $9}", NULL};
-//    execvp(command[0], command);
 }
 
-void cut(){
+void cut_first(){
     execlp("cut", "cut", "-c","2-", (char*) NULL);
 }
 
-void reformat_date() {
+void remove_time_from_date() {
 //    execlp("sed", "/bin/sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", (char *) NULL);
     char *command[3] = {"sed", "s/:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]//g", NULL};
     execvp(command[0], command);
 }
 
+void reformat_date(){
+    char* command[3] = {"sed", "s/\\//-/g", NULL};
+    execvp(command[0],command);
+}
+
+void find_errcode4(){
+    char* commmand[3]
+}
+
+void pipe5(){
+    create_pipe(reformat_date, pipe6);
+}
+
+void pipe4() {
+    create_pipe(remove_time_from_date, pipe5);
+}
+
 void pipe3() {
-//    create_pipe();
+    create_pipe(cut_first, pipe4);
 }
 
 void pipe2() {
-    create_pipe(print_date_errcode, cut);
+    create_pipe(print_date_errcode, pipe3);
 }
 
 void pipe1() {
@@ -87,43 +84,3 @@ int main(int argc, char **argv) {
     pipe1();
     return 0;
 }
-
-
-//void fork_write(const pid_t *pid, int* fd, char **command) {
-//    pid = (pid_t *) fork();
-//    if (!pid) {
-//        dup2(fd[WRITE_END], STDOUT_FILENO);
-//        close(fd[WRITE_END]);
-//        execvp((const char *) command[0], command);
-//        exit(EXIT_FAILURE);
-//    }
-//}
-//
-//void fork_read(const pid_t *pid, int* fd, char **command) {
-//    pid = (pid_t *) fork();
-//    if (pid == 0) {
-//        dup2(fd[READ_END], STDIN_FILENO);
-//        close(fd[READ_END]);
-//        execvp(command[0], command);
-//        exit(EXIT_FAILURE);
-//    }
-//}
-
-//    if (pid1) {
-//        dup2(fd[WRITE_END], STDOUT_FILENO);
-//        printf("first");
-//        char *arg[] = {"cat", "../log.txt", NULL};
-//        execvp(arg[0], arg);
-//        close(fd[1]);
-//
-//        exit(EXIT_FAILURE);
-//    }
-
-//    pid_t pid2 = fork();
-//    if (pid2 == 0) {
-//        dup2(fd[READ_END], STDIN_FILENO);
-//        printf("second");
-//        close(fd[READ_END]);
-//        char* command[3] = {"awk", "{print $4, $9}", NULL};
-//        execvp(command[0], command);
-//    }

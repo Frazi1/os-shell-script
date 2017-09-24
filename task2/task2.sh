@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cat log.txt |
   awk '{print $4, $9}'|
   cut -c 2-|
