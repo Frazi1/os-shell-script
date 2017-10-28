@@ -13,27 +13,34 @@ void create_pipe(void (*pf)(void), void (*chf)(void)) {
     int fd[2];
     pipe(fd);
     pid_t pid = fork();
+    printf("shit2");
     if (pid) {
+        printf("shit1");
         //parent
         if (fd[1] != 1) {
             dup2(fd[1], 1);
         }
+        printf("shit");
         close(fd[0]);
         close(fd[1]);
+        printf("shit");
         pf();
     } else {
         //child
+        printf("shit");
         if (fd[0] != 0) {
             dup2(fd[0], 0);
         }
+        printf("shit");
         close(fd[0]);
         close(fd[1]);
+        printf("shit");
         chf();
     }
 //    close(fd[0]);
 //    close(fd[1]);
     int status;
-    waitpid(pid,&status , NULL);
+//    waitpid(pid,&status , NULL);
 }
 
 void cat_log() {
@@ -71,6 +78,7 @@ void count_uniq_dates(){
 }
 
 void sort(){
+    printf("TEST");
     execlp("sort", "sort", "-nrk 1", (char*) NULL);
 }
 
@@ -104,8 +112,8 @@ void pipe1() {
 
 
 int main(int argc, char **argv) {
-
-    pipe1();
-
+    printf("shit");
+//    pipe1();
+    printf("shit");
     return 0;
 }

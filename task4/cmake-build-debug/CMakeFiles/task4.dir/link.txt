@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/task4.dir/main.c.o CMakeFiles/task4.dir/structs.c.o CMakeFiles/task4.dir/linked_list.c.o  -o task4 -lpthread 

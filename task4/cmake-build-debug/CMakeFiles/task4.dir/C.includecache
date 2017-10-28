@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dmitry/fkn/os/task4/linked_list.c
+linked_list.h
+/home/dmitry/fkn/os/task4/linked_list.h
+
+/home/dmitry/fkn/os/task4/linked_list.h
+stdio.h
+-
+stdlib.h
+-
+pthread.h
+-
+
+/home/dmitry/fkn/os/task4/main.c
+stdio.h
+-
+pthread.h
+-
+unistd.h
+-
+structs.h
+/home/dmitry/fkn/os/task4/structs.h
+linked_list.h
+/home/dmitry/fkn/os/task4/linked_list.h
+
+/home/dmitry/fkn/os/task4/structs.c
+
+/home/dmitry/fkn/os/task4/structs.h
+sys/types.h
+-
+
