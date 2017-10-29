@@ -6,14 +6,15 @@
 
 #define GNOMES_CNT 4
 #define DEERS_CNT 2
-#define MEETING_TIME 2
-#define SHIPPING_TIME 4
-#define GNOME_SLEEPING_TIME_MAX 10
-#define GNOME_SLEEPING_TIME_MIN 5
+#define GNOMES_TO_WAKE 2
+#define SANTA_MEETING_TIME 2
+#define SANTA_SLEEPING_TIME 1
+#define SANTA_SHIPPING_TIME 4
+#define SANTA_PREPARATION_TIME 1
+#define GNOME_SLEEPING_TIME_MAX 12
+#define GNOME_SLEEPING_TIME_MIN 7
 #define DEER_SLEEPING_TIME_MIN 5
 #define DEER_SLEEPING_TIME_MAX 10
-#define GNOMES_TO_WAKE 2
-#define SANTA_SLEEPING_TIME 1
 
 //global vars
 
@@ -65,20 +66,21 @@ int gnome_thread(gnome_t* gnome) {
 
 void santa_thread(santa_t* santa) {
 
-    srand(time(NULL) + 29);
+    srand((unsigned int) (time(NULL) + 29));
     int sleeping = 0;
+    santa_sleep(&sleeping);
     while(1) {
         pthread_mutex_lock(&santa->mutex);
-        while(pthread_cond_wait(&(santa->door_bell), &(santa->mutex)));
-//        if(sleeping) sleep(MEETING_TIME);
+        pthread_cond_wait(&santa->door_bell, &santa->mutex);
         if(gnomes_queue.count >= gnomes_to_wake ) {
             santa_wake(&sleeping, gnomes_wake);
             pthread_mutex_lock(&gnomes_queue.mutex);
             while(gnomes_queue.count > 0) {
+                sleep(SANTA_PREPARATION_TIME);
                 gnome_t* gnome = (gnome_t*) pop_unsafe(&gnomes_queue);
                 printf("santa meets gnome %d\n", gnome->id);
-                sleep(MEETING_TIME);
-                pthread_cond_signal(&(gnome->cond));
+                sleep(SANTA_MEETING_TIME);
+                pthread_cond_signal(&gnome->cond);
             }
             pthread_mutex_unlock(&gnomes_queue.mutex);
         }
@@ -114,11 +116,11 @@ void create_gnomes(int count){
 }
 
 void signal_santa(enum reason_t reason){
+    pthread_mutex_lock(&santa.mutex);
     if(gnomes_queue.count >= gnomes_to_wake){
-//        pthread_mutex_lock(&santa.mutex);
         pthread_cond_signal(&santa.door_bell);
-//        pthread_mutex_unlock(&santa.mutex);
     }
+    pthread_mutex_unlock(&santa.mutex);
 }
 
 void santa_sleep(int* sleeping) {
