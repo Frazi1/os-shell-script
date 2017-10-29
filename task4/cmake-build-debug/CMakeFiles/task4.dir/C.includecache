@@ -31,7 +31,19 @@ linked_list.h
 /home/dmitry/fkn/os/task4/linked_list.h
 
 /home/dmitry/fkn/os/task4/structs.c
+unistd.h
+-
+structs.h
+/home/dmitry/fkn/os/task4/structs.h
 
+/home/dmitry/fkn/os/task4/structs.h
+stdlib.h
+-
+pthread.h
+-
+stdio.h
+-
+structs.h
 /home/dmitry/fkn/os/task4/structs.h
 sys/types.h
 -

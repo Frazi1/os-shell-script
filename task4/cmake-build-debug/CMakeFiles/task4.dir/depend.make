@@ -9,4 +9,5 @@ CMakeFiles/task4.dir/main.c.o: ../main.c
 CMakeFiles/task4.dir/main.c.o: ../structs.h
 
 CMakeFiles/task4.dir/structs.c.o: ../structs.c
+CMakeFiles/task4.dir/structs.c.o: ../structs.h
 

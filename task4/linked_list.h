@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-typedef struct list_list {
+typedef struct linked_list {
     pthread_mutex_t mutex;
     struct node *head;
     int count;
@@ -18,7 +18,7 @@ typedef struct node {
 
 //void add(node_t* head, void* item);
 void add(linked_list_t *list, void *item);
-void print_list(linked_list_t* head);
+void* pop_unsafe(linked_list_t* list);
 void* pop(linked_list_t* list);
 linked_list_t empty_list();
 #endif //TASK4_LINKED_LIST_H

@@ -4,41 +4,137 @@
 #include "structs.h"
 #include "linked_list.h"
 
-#define GNOMES_CNT 3
+#define GNOMES_CNT 4
 #define DEERS_CNT 2
 #define MEETING_TIME 2
-#define SHIPPING_TIME 3
+#define SHIPPING_TIME 4
+#define GNOME_SLEEPING_TIME_MAX 10
+#define GNOME_SLEEPING_TIME_MIN 5
+#define DEER_SLEEPING_TIME_MIN 5
+#define DEER_SLEEPING_TIME_MAX 10
+#define GNOMES_TO_WAKE 2
+#define SANTA_SLEEPING_TIME 1
+
+//global vars
+
 int deers_cnt = DEERS_CNT;
 int gnomes_cnt = GNOMES_CNT;
-int gnomes_to_wake;
+int gnomes_to_wake = GNOMES_TO_WAKE ;
+linked_list_t gnomes_queue, deers_queue;
+gnome_t gnomes[GNOMES_CNT];
+santa_t santa;
+
+//func declarations
+void santa_thread(santa_t* santa) ;
+int gnome_thread(gnome_t* gnome) ;
+int random_number(int min_num, int max_num);
+void create_gnomes(int count);
+void signal_santa(enum reason_t reason);
 
 
-//void * func1(const int *arg) {
-//    gnome a = NULL;
-//    int a =  *arg;
-//    printf("%d ", a);
-//    sleep(1);
-//    a++;
-//    printf("%d ", a);
-//    pthread_exit(NULL);
-//}
-
-//int main() {
-//    pthread_t f1_thread, f2_thread;
-//    int i1 = 1, i2 = 2;
-//    pthread_create(&f1_thread, NULL, (void *(*)(void *)) func1, &i1);
-//    pthread_join(f1_thread, NULL);
-//    return 0;
-//}
 
 int main() {
-    linked_list_t list = empty_list();
-    int a = 1;
-    int b = 32;
-    add(&list, &a);
-    add(&list, &b);
-    printf("%d\n", (*(int*) pop(&list)));
-    printf("%d\n", (*(int*) pop(&list)));
+    gnomes_queue = empty_list();
+    deers_queue = empty_list();
+    santa = get_santa();
+
+    create_gnomes(gnomes_cnt);
+    pthread_create(&(santa.pthread), NULL, (void *(*)(void *)) santa_thread, &santa);
+
+    pthread_join(santa.pthread, NULL);
+    for (int i = 0; i < GNOMES_CNT; ++i) {
+        pthread_join(gnomes[i].pthread, NULL);
+    }
     return 0;
 }
 
+int gnome_thread(gnome_t* gnome) {
+    srand(time(NULL) + gnome->id);
+    while(1){
+        sleep(random_number(GNOME_SLEEPING_TIME_MIN,
+                            GNOME_SLEEPING_TIME_MAX));
+        add(&gnomes_queue, gnome);
+        pthread_mutex_lock(&(gnome->mutex));
+        printf("gnome %d waiting for santa\n", gnome->id);
+        signal_santa(gnomes_wake);
+        while(pthread_cond_wait(&(gnome->cond), &(gnome->mutex)));
+        pthread_mutex_unlock(&(gnome->mutex));
+    }
+    pthread_exit(0);
+}
+
+void santa_thread(santa_t* santa) {
+
+    srand(time(NULL) + 29);
+    int sleeping = 0;
+    while(1) {
+        pthread_mutex_lock(&santa->mutex);
+        while(pthread_cond_wait(&(santa->door_bell), &(santa->mutex)));
+//        if(sleeping) sleep(MEETING_TIME);
+        if(gnomes_queue.count >= gnomes_to_wake ) {
+            santa_wake(&sleeping, gnomes_wake);
+            pthread_mutex_lock(&gnomes_queue.mutex);
+            while(gnomes_queue.count > 0) {
+                gnome_t* gnome = (gnome_t*) pop_unsafe(&gnomes_queue);
+                printf("santa meets gnome %d\n", gnome->id);
+                sleep(MEETING_TIME);
+                pthread_cond_signal(&(gnome->cond));
+            }
+            pthread_mutex_unlock(&gnomes_queue.mutex);
+        }
+        santa_sleep(&sleeping);
+        pthread_mutex_unlock(&santa->mutex);
+    }
+    pthread_exit(0);
+}
+
+int random_number(int min_num, int max_num)
+{
+    int result = 0, low_num = 0, hi_num = 0;
+
+    if (min_num < max_num)
+    {
+        low_num = min_num;
+        hi_num = max_num + 1; // include max_num in output
+    } else {
+        low_num = max_num + 1; // include max_num in output
+        hi_num = min_num;
+    }
+
+//    srand(time(NULL));
+    result = (rand() % (hi_num - low_num)) + low_num;
+    return result;
+}
+
+void create_gnomes(int count){
+    for (int i = 0; i < count; ++i) {
+        gnomes[i] = get_gnome(i+1);
+        pthread_create(&(gnomes[i].pthread), NULL, (void *(*)(void *)) gnome_thread, &(gnomes[i]));
+    }
+}
+
+void signal_santa(enum reason_t reason){
+    if(gnomes_queue.count >= gnomes_to_wake){
+//        pthread_mutex_lock(&santa.mutex);
+        pthread_cond_signal(&santa.door_bell);
+//        pthread_mutex_unlock(&santa.mutex);
+    }
+}
+
+void santa_sleep(int* sleeping) {
+    if(*sleeping == 0){
+        *sleeping = 1;
+        printf("santa sleeping\n");
+        sleep(SANTA_SLEEPING_TIME);
+    }
+}
+
+void santa_wake(int* sleeping, enum reason_t reason){
+    *sleeping = 0;
+    if(reason == gnomes_wake){
+        printf("gnomes wake santa\n");
+    }
+    if(reason == deers_wake){
+        printf("deers wake santa\n");
+    }
+}
