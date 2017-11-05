@@ -7,14 +7,16 @@
 #IncludeRegexTransform: 
 
 /home/dmitry/fkn/os/task6/main.c
-stdio.h
+sys/socket.h
 -
-tcrdb.h
+sys/un.h
+-
+stdio.h
 -
 stdlib.h
 -
-stdbool.h
+unistd.h
 -
-stdint.h
+netinet/in.h
 -
 
