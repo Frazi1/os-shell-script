@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include "structs.h"
 #include "linked_list.h"
 
@@ -86,6 +87,38 @@ void deer_thread(deer_t* deer) {
     }
 }
 
+int santa_go_with_deers(int *sleeping) {
+    santa_wake(sleeping, deers_wake);
+    pthread_mutex_lock(&deers_queue.mutex);
+    printf("santa is shipping presents with deers \n");
+    sleep(SANTA_SHIPPING_TIME);
+    while(deers_queue.count > 0) {
+                deer_t* deer = pop_unsafe(&deers_queue);
+                pthread_cond_signal(&deer->cond);
+            }
+    printf("Santa releases his deers.\n");
+    pthread_mutex_unlock(&deers_queue.mutex);
+    return (*sleeping);
+}
+
+int santa_meet_gnomes(int *sleeping) {
+    santa_wake(sleeping, gnomes_wake);
+    pthread_mutex_lock(&gnomes_queue.mutex);
+    while(gnomes_queue.count > 0) {
+                sleep(SANTA_PREPARATION_TIME);
+                gnome_t* gnome = (gnome_t*) pop_unsafe(&gnomes_queue);
+                printf("Santa meets gnome %d\n", gnome->id);
+                sleep(SANTA_MEETING_TIME);
+                pthread_cond_signal(&gnome->cond);
+            }
+    pthread_mutex_unlock(&gnomes_queue.mutex);
+    return (*sleeping);
+}
+
+bool gnomes_ready() { return gnomes_queue.count >= gnomes_to_wake; }
+
+bool deers_ready() { return deers_queue.count == deers_cnt; }
+
 void santa_thread(santa_t* santa) {
 
     srand((unsigned int) (time(NULL) + 29));
@@ -95,33 +128,22 @@ void santa_thread(santa_t* santa) {
         pthread_mutex_lock(&santa->mutex);
         pthread_cond_wait(&santa->door_bell, &santa->mutex);
         //go with deers
-        if(deers_queue.count == deers_cnt) {
-            santa_wake(&sleeping, deers_wake);
-            pthread_mutex_lock(&deers_queue.mutex);
-            printf("santa is shipping presents with deers \n");
-            sleep(SANTA_SHIPPING_TIME);
-            while(deers_queue.count > 0) {
-                deer_t* deer = pop_unsafe(&deers_queue);
-                pthread_cond_signal(&deer->cond);
+        if(deers_ready()) {
+            sleeping = santa_go_with_deers(&sleeping);
+            if(gnomes_ready()) {
+                sleeping = santa_meet_gnomes(&sleeping);
             }
-            printf("Santa releases his deers.\n");
-            pthread_mutex_unlock(&deers_queue.mutex);
         }
         //end deers
         //meet gnomes
-        if(gnomes_queue.count >= gnomes_to_wake ) {
-            santa_wake(&sleeping, gnomes_wake);
-            pthread_mutex_lock(&gnomes_queue.mutex);
-            while(gnomes_queue.count > 0) {
-                sleep(SANTA_PREPARATION_TIME);
-                gnome_t* gnome = (gnome_t*) pop_unsafe(&gnomes_queue);
-                printf("Santa meets gnome %d\n", gnome->id);
-                sleep(SANTA_MEETING_TIME);
-                pthread_cond_signal(&gnome->cond);
+        else if(gnomes_ready()) {
+            sleeping = santa_meet_gnomes(&sleeping);
+            if(deers_ready()){
+                sleeping = santa_go_with_deers(&sleeping);
             }
-            pthread_mutex_unlock(&gnomes_queue.mutex);
-            //end meet gnomes
         }
+        //end meet gnomes
+
         santa_sleep(&sleeping);
         pthread_mutex_unlock(&santa->mutex);
     }
