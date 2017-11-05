@@ -8,6 +8,10 @@
 int main(int argc, char *argv[]) {
     int sockfd, port;
     struct sockaddr_un serv_addr;
+    char* path = argv[1];
+    char* key = argv[2];
+    printf("key: %s, lenght: %d", key, (int) sizeof(key));
+    char* value = argv[3];
 
     char buffer[256];
 
@@ -28,10 +32,10 @@ int main(int argc, char *argv[]) {
     char command[2];
     command[0] = 0xC8;
     command[1] = 0x10;
-    char key[] = "test";
-    char value[] = "kets";
-    int key_size = htonl(sizeof(key) - 1);
-    int value_size = htonl(sizeof(value) -1);
+//    char key[] = "test";
+//    char value[] = "kets";
+    int key_size = htonl(sizeof(key) - 2);
+    int value_size = htonl(sizeof(value));
     printf("sizeof key %d\n", ntohl((uint32_t) key_size) );
     printf("sizeof value %d\n", ntohl((uint32_t) value_size));
 
