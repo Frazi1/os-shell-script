@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dmitry/fkn/os/task6/main.c
+stdio.h
+-
+tcrdb.h
+-
+stdlib.h
+-
+stdbool.h
+-
+stdint.h
+-
+

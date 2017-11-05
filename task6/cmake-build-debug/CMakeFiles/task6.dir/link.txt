@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/task6.dir/main.c.o  -o task6 -lpthread -ltokyotyrant -ltokyocabinet 
