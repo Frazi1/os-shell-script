@@ -25,6 +25,8 @@ pthread.h
 -
 unistd.h
 -
+stdbool.h
+-
 structs.h
 /home/dmitry/fkn/os/task4/structs.h
 linked_list.h
