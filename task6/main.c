@@ -5,10 +5,16 @@
 #include <unistd.h>
 #include <netinet/in.h>
 
+int get_strlen(char* str) {
+    int n = 0;
+    while(str[n] != '\0') n++;
+    return n;
+}
+
 int main(int argc, char *argv[]) {
     int sockfd, port;
     struct sockaddr_un serv_addr;
-    char* path = argv[1];
+    char *path = argv[1];
     char* key = argv[2];
     printf("key: %s, lenght: %d", key, (int) sizeof(key));
     char* value = argv[3];
@@ -25,6 +31,7 @@ int main(int argc, char *argv[]) {
 
     if(connect(sockfd, (const struct sockaddr *) &serv_addr, sizeof(serv_addr))) {
         printf("ERROR connection");
+        perror("123");
         exit(1);
     }
 
@@ -34,8 +41,8 @@ int main(int argc, char *argv[]) {
     command[1] = 0x10;
 //    char key[] = "test";
 //    char value[] = "kets";
-    int key_size = htonl(sizeof(key) - 2);
-    int value_size = htonl(sizeof(value));
+    int key_size = htonl((uint32_t) get_strlen(key));
+    int value_size = htonl((uint32_t) get_strlen(value));
     printf("sizeof key %d\n", ntohl((uint32_t) key_size) );
     printf("sizeof value %d\n", ntohl((uint32_t) value_size));
 
