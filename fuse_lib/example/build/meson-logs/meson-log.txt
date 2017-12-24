@@ -1,0 +1,8 @@
+Build started at 2017-12-17T20:52:52.288057
+Main binary: /usr/bin/python3
+Python system: Linux
+The Meson build system
+Version: 0.44.0
+Source dir: /home/dmitry/fkn/os/fuse_lib/example
+Build dir: /home/dmitry/fkn/os/fuse_lib/example/build
+Build type: native build
