@@ -85,14 +85,14 @@ static fs_node_t *find_node(const char *path, fs_node_t *parent) {
     return result;
 }
 
-static int do_readdir(const char *path,
-                      void *buffer,
-                      fuse_fill_dir_t filler,
-                      off_t offset,
-                      struct fuse_file_info *fi) {
+static int readDir(const char *path,
+                   void *buffer,
+                   fuse_fill_dir_t filler,
+                   off_t offset,
+                   struct fuse_file_info *fi) {
     fs_node_t *parent_node, *current_node;
 
-    printf("do_readdir: %s\n", path);
+    printf("readDir: %s\n", path);
 
     filler(buffer, ".", NULL, 0);
     filler(buffer, "..", NULL, 0);
@@ -114,11 +114,11 @@ static int do_readdir(const char *path,
     return 0;
 }
 
-static int do_getattr(const char *path, struct stat *st) {
+static int getAttr(const char *path, struct stat *st) {
     fs_node_t *node;
     int ret = 0;
 
-    printf("do_getattr: %s\n", path);
+    printf("getAttr: %s\n", path);
 
     node = find_node(path, root);
     if (node != NULL) {
@@ -141,11 +141,11 @@ static int do_getattr(const char *path, struct stat *st) {
     return ret;
 }
 
-static int do_read(const char *path,
-                   char *buffer,
-                   size_t size,
-                   off_t offset,
-                   struct fuse_file_info *fi) {
+static int readFile(const char *path,
+                    char *buffer,
+                    size_t size,
+                    off_t offset,
+                    struct fuse_file_info *fi) {
     fs_node_t *node;
     int bytes_read = 0;
 
@@ -166,9 +166,9 @@ static int do_read(const char *path,
     return bytes_read;
 }
 
-static int do_mkdir(const char *path, mode_t mode);
+static int mkDir(const char *path, mode_t mode);
 
-static int do_chmod(const char *path, mode_t mode) {
+static int chMod(const char *path, mode_t mode) {
     fs_node_t *node = find_node(path, root);
     if (node != NULL) {
         node->mode = mode;
@@ -180,11 +180,11 @@ static int do_chmod(const char *path, mode_t mode) {
 static void add_child_node(fs_node_t *parent, fs_node_t *child);
 
 static struct fuse_operations operations = {
-        .getattr    = do_getattr,
-        .readdir    = do_readdir,
-        .read     = do_read,
-        .mkdir    = do_mkdir,
-        .chmod   = do_chmod
+        .getattr    = getAttr,
+        .readdir    = readDir,
+        .read     = readFile,
+        .mkdir    = mkDir,
+        .chmod   = chMod
 };
 
 static fs_node_t *create_directory(char *name) {
@@ -235,6 +235,21 @@ static void add_child_node(fs_node_t *parent, fs_node_t *child) {
     parent->info.dir.child = child;
 }
 
+static int copyFile(const char *path){
+    FILE* input, * output;
+    char buffer[10];
+    size_t nread;
+
+    fs_node_t* file = create_file("cat");
+    input = fopen("/bin/cat", "rb");
+    while(nread = fread(buffer, sizeof(char), sizeof(buffer), input)) {
+        fwrite(buffer, sizeof(char), nread, file->info.file.data_ptr);
+        file->info.file.size+=nread;
+    }
+    file->n_links++; /* a new hard link */
+    add_child_node(root, file);
+}
+
 
 static void make_sample_hierarchy() {
     fs_node_t *first, *second;
@@ -256,11 +271,17 @@ static void make_sample_hierarchy() {
 
     file->info.file.data_ptr = "Hello";
     file->info.file.size = strlen(file->info.file.data_ptr);
+
+    fs_node_t* script = create_file("script.sh");
+    script->n_links++;
+    add_child_node(root, script);
+    script->info.file.data_ptr = "#!/bin/bash echo 123";
+    script->info.file.size = strlen(script->info.file.data_ptr);
 }
 
 
 
-static int do_mkdir(const char *path, mode_t mode) {
+static int mkDir(const char *path, mode_t mode) {
     printf("mk1dirdsaads:%s\n", path);
 
     int nameLen = 0;
