@@ -13,8 +13,8 @@
 struct node;
 
 typedef enum node_type {
-	FILE,
-	DIRECTORY
+	FILE_TYPE,
+	DIRECTORY_TYPE
 } node_type;
 
 typedef struct file_node {
@@ -55,7 +55,7 @@ static node_t *findNode(const char *path, node_t *parent) {
 		entry_len++;
 	}
 
-	if (parent == NULL || parent->type != DIRECTORY) {
+	if (parent == NULL || parent->type != DIRECTORY_TYPE) {
 		result = parent;
 	}
 	else if (entry_len == 0) {
@@ -87,7 +87,7 @@ static node_t *create_directory(char *name) {
 
 	node->name = name;
 	node->mode = 0777;
-	node->type = DIRECTORY;
+	node->type = DIRECTORY_TYPE;
 	node->next_sibling = NULL;
 	node->content.dir.first_child = NULL;
 	node->links_count = 2;
@@ -109,7 +109,7 @@ static node_t *create_file(char *name) {
 
 	node->name = name;
 	node->mode = 0666;
-	node->type = FILE;
+	node->type = FILE_TYPE;
 	node->next_sibling = NULL;
 	node->content.file.size = 0;
 	node->content.file.data = NULL;
@@ -133,24 +133,16 @@ static int copy_file(const char *path) {
 	add_child_node(root, file);
 }
 
-static struct fuse_operations operations = {
-	.getattr = getattr,
-	.readdir = readdir,
-	.read = read,
-	.mkdir = mkdir,
-	.chmod = chmod
-};
-
-static int getattr(const char *path, struct stat *st) {
+static int f_getattr(const char *path, struct stat *st) {
 	node_t *node;
 
 	node = findNode(path, root);
 	if (node != NULL) {
 		st->st_mode = node->mode;
-		if (node->type == DIRECTORY) {
+		if (node->type == DIRECTORY_TYPE) {
 			st->st_mode |= S_IFDIR;
 		}
-		else if (node->type == FILE) {
+		else if (node->type == FILE_TYPE) {
 			st->st_mode |= S_IFREG;
 			st->st_size = node->content.file.size;
 		}
@@ -166,125 +158,130 @@ static int getattr(const char *path, struct stat *st) {
 	return 0;
 }
 
-static int readdir(const char *path,
-	void *buffer,
-	fuse_fill_dir_t filler,
-	off_t offset,
-	struct fuse_file_info *fi) {
-	node_t *parent_node, *current_node;
+static int f_readdir(const char *path,
+                     void *buffer,
+                     fuse_fill_dir_t filler,
+                     off_t offset,
+                     struct fuse_file_info *fi) {
+    node_t *parent_node, *current_node;
 
-	filler(buffer, ".", NULL, 0);
-	filler(buffer, "..", NULL, 0);
+    filler(buffer, ".", NULL, 0);
+    filler(buffer, "..", NULL, 0);
 
-	parent_node = findNode(path, root);
+    parent_node = findNode(path, root);
 
-	if (parent_node != NULL) {
+    if (parent_node != NULL) {
 
-		current_node = parent_node->content.dir.first_child;
-		while (current_node != NULL) {
-			filler(buffer, current_node->name, NULL, 0);
-			current_node = current_node->next_sibling;
-		}
-		return 0;
-	}
+        current_node = parent_node->content.dir.first_child;
+        while (current_node != NULL) {
+            filler(buffer, current_node->name, NULL, 0);
+            current_node = current_node->next_sibling;
+        }
+        return 0;
+    }
+}
 
+    static int f_read(const char *path,
+                    char *buffer,
+                    size_t size,
+                    off_t offset,
+                    struct fuse_file_info *fi) {
+        node_t *node;
+        int bytes_read = 0;
 
-	static int read(const char *path,
-		char *buffer,
-		size_t size,
-		off_t offset,
-		struct fuse_file_info *fi) {
-		node_t *node;
-		int bytes_read = 0;
+        node = findNode(path, root);
+        if (node != NULL && offset < node->content.file.size) {
+            int bytes_available = node->content.file.size - offset;
+            if (bytes_available >= size) {
+                bytes_read = size;
+            } else {
+                bytes_read = bytes_available;
+            }
 
-		node = findNode(path, root);
-		if (node != NULL && offset < node->content.file.size) {
-			int bytes_available = node->content.file.size - offset;
-			if (bytes_available >= size) {
-				bytes_read = size;
-			}
-			else {
-				bytes_read = bytes_available;
-			}
+            if (bytes_read > 0) {
+                memcpy(buffer, node->content.file.data, bytes_read);
+            }
+        }
 
-			if (bytes_read > 0) {
-				memcpy(buffer, node->content.file.data, bytes_read);
-			}
-		}
-
-		return bytes_read;
-	}
-
-
-	static int chmod(const char *path, mode_t mode) {
-		node_t *node = findNode(path, root);
-		if (node != NULL) {
-			node->mode = mode;
-			return 0;
-		}
-		return -1;
-	}
-
-	static int mkdir(const char *path, mode_t mode) {
-
-		int nameLen = 0;
-		for (int i = strlen(path) - 1; i >= 0; i--) {
-			if (path[i] == '/') break;
-			nameLen++;
-		}
-
-		node_t *dir;
-
-		if (nameLen != strlen(path) - 1) {
-			char* pathToDir = (char*)malloc(strlen(path) - nameLen - 1);
-			strncpy(pathToDir, path, strlen(path) - nameLen - 1);
-			pathToDir[strlen(path) - nameLen - 1] = '\0';
-			dir = findNode(pathToDir, root);
-		}
-		else {
-			dir = root;
-		}
-
-		if (dir == NULL) return -1;
-
-		char *corrected_path = (char *)malloc(nameLen);
-		strncpy(corrected_path, path + strlen(path) - nameLen, nameLen);
-		corrected_path[nameLen] = '\0';
-		create_directory_and_append_to_parent(corrected_path, mode, dir);
-		return 0;
-	}
+        return bytes_read;
+    }
 
 
-	static void init() {
-		node_t *first, *second;
-		node_t *file;
-		node_t *first_inner;
+    static int f_chmod(const char *path, mode_t mode) {
+        node_t *node = findNode(path, root);
+        if (node != NULL) {
+            node->mode = mode;
+            return 0;
+        }
+        return -1;
+    }
 
-		first = create_directory_and_append_to_parent("first", 0777, root);
+    static int f_mkdir(const char *path, mode_t mode) {
 
-		second = create_directory("second");
-		root->links_count++; /* a new subfolder */
-		add_child_node(root, second);
+        int nameLen = 0;
+        for (int i = strlen(path) - 1; i >= 0; i--) {
+            if (path[i] == '/') break;
+            nameLen++;
+        }
 
-		first_inner = create_directory("first_inner");
-		first->links_count++; /* a new subfolder */
-		add_child_node(first, first_inner);
-		file = create_file("sample.txt");
-		file->links_count++; /* a new hard link */
-		add_child_node(root, file);
+        node_t *dir;
 
-		file->content.file.data = "Hello";
-		file->content.file.size = strlen(file->content.file.data);
+        if (nameLen != strlen(path) - 1) {
+            char *pathToDir = (char *) malloc(strlen(path) - nameLen - 1);
+            strncpy(pathToDir, path, strlen(path) - nameLen - 1);
+            pathToDir[strlen(path) - nameLen - 1] = '\0';
+            dir = findNode(pathToDir, root);
+        } else {
+            dir = root;
+        }
 
-		node_t* script = create_file("script.sh");
-		script->links_count++;
-		add_child_node(root, script);
-		script->content.file.data = "#!/bin/bash echo 123";
-		script->content.file.size = strlen(script->content.file.data);
-	}
+        if (dir == NULL) return -1;
 
-	int main(int argc, char *argv[]) {
-		root = create_directory("");
-		init();
-		return fuse_main(argc, argv, &operations, NULL);
-	}
+        char *corrected_path = (char *) malloc(nameLen);
+        strncpy(corrected_path, path + strlen(path) - nameLen, nameLen);
+        corrected_path[nameLen] = '\0';
+        create_directory_and_append_to_parent(corrected_path, mode, dir);
+        return 0;
+    }
+
+    static void init() {
+        node_t *first, *second;
+        node_t *file;
+        node_t *first_inner;
+
+        first = create_directory_and_append_to_parent("first", 0777, root);
+
+        second = create_directory("second");
+        root->links_count++;
+        add_child_node(root, second);
+
+        first_inner = create_directory("first_inner");
+        first->links_count++;
+        add_child_node(first, first_inner);
+        file = create_file("sample.txt");
+        file->links_count++;
+        add_child_node(root, file);
+
+        file->content.file.data = "Hello";
+        file->content.file.size = strlen(file->content.file.data);
+
+        node_t *script = create_file("script.sh");
+        script->links_count++;
+        add_child_node(root, script);
+        script->content.file.data = "#!/bin/bash echo 123";
+        script->content.file.size = strlen(script->content.file.data);
+    }
+
+    static struct fuse_operations operations = {
+            .getattr = f_getattr,
+            .readdir = f_readdir,
+            .read = f_read,
+            .mkdir = f_mkdir,
+            .chmod = f_chmod
+    };
+
+    int main(int argc, char *argv[]) {
+        root = create_directory("");
+        init();
+        return fuse_main(argc, argv, &operations, NULL);
+    }
